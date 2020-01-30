@@ -23,6 +23,10 @@
 /app/config/parameters.yml
 /app/config/parameters.ini
 
+#service secret whith controller
+/src/Service/ParseCitation.php
+/src/Controller/ParseController.php
+
 # Managed by Composer
 /app/bootstrap.php.cache
 /var/bootstrap.php.cache
