@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block meta_title %}
+    <title>Connectez-vous - Citation-inspiration.com</title>
+    <meta property="og:title" content="Connectez-vous - Citation-inspiration.com">
+    <meta name="description" content="Connectez-vous">
+    <meta property="og:description" content="Connectez-vous">
+    <meta property="og:image" content="https://citation-inspiration.com{{ asset('build/logo.png') }}">
+{% endblock %}
+
+{% block body %}
+<div class="col-10 offset-1">
+    <form method="post" class="form_login">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="mb-3">
+                Vous êtes connectés {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
+
+        <h1 class="h3 mb-3 font-weight-normal text-center">Connectez-vous</h1>
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" required>
+        </div>
+        <input type="hidden" name="_csrf_token"
+               value="{{ csrf_token('authenticate') }}"
+        >
+
+        {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3 form-group">
+                <label>
+                    <input type="checkbox" name="_remember_me" class="form-control"> Maintenir la connection
+                </label>
+            </div>
+        #}
+        <div class="form-group text-center">
+            <button class="btn btn-lg btn-primary" type="submit" class="form-control">
+                Se connecter
+            </button>
+        </div>
+    </form>
+    <p class="mt-5 mb-5 text-center lead    ">Pas encore inscrits ? <br><a href="/register" class="btn btn-info btn-lg" role="button" aria-pressed="true">Créez un compte</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{# templates/blog/index.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block meta_title %}
+    <title>Liste des derniers articles et news - Citation-inspiration.com</title>
+    <meta property="og:title" content="Liste des derniers articles et news - Citation-inspiration.com">
+    <meta name="description" content="Liste des derniers articles et news">
+    <meta property="og:description" content="Liste des derniers articles et news">
+    <meta property="og:image" content="https://citation-inspiration.com{{ asset('build/logo.png') }}">
+{% endblock %}
+
+{% block body %}
+        <div class="container">
+            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+                <h1 class="text-center">Articles</h1>
+            {% for article in articles %}
+                <article style="background-color: #fff;" class="p-3 col-12">
+                    <div class="row">
+                        <div class="post-thumbnail col-lg-6 col-md-12 col-sm-12">
+                            {% if (article.slug is not null) %}
+                                <a href="{{ path('blogShowSlug', {'slug': article.slug }) }}">
+                                    <img data-lazyloaded="1" class="" src="{{ asset('uploads/' ~ article.picture) }}" width="100%" height="auto"/>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('blogShow', {'article': article.id }) }}">
+                                    <img data-lazyloaded="1" class="" src="{{ asset('uploads/' ~ article.picture) }}" width="100%" height="auto"/>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h2 class="entry-title">
+                                {% if (article.slug is not null) %}
+                                    <a href="{{ path('blogShowSlug', {'slug': article.slug }) }}">
+                                        {{ article.title }}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('blogShow', {'article': article.id }) }}">
+                                        {{ article.title }}
+                                    </a>
+                                {% endif %}
+                            </h2>
+                            <p class="post-meta">Posté par Admin le {{ article.publicationDate|date('d/m/Y') }}</p>
+                            {% if app.user and is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('blogEdit', {'article': article.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                <a href="{{ path('blogRemove', {'article': article.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+                <hr>
+            {% endfor %}
+            </div>
+        </div>
+    {% include 'citations/front/part/pagination.html.twig' %}
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+{% endblock %}

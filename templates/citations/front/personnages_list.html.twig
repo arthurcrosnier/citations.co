@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block meta_title %}
+    <title>{{ title }}</title>
+    <meta property="og:title" content="{{ title }}">
+    <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="https://citation-inspiration.com{{ asset('build/logo.png') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center"> Personnages de fiction en {{ lettre|upper }} </h1>
+    <h2 class="text-center" style="border-bottom: 1px solid #888888;">{{ total }} Personnages commençant par la lettre {{ lettre|upper }}</h2>
+    <div class="row">
+        <div class="col-lg-7 col-md-7 col-xs-10 col-sm-10 offset-lg-3 offset-md-3 offset-xs-1 offset-sm-1" style="margin: 0 auto;">
+            {% include 'citations/front/part/pagination_auteur.html.twig' %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="offset-lg-2 offset-md-0 offset-xs-0 offset-sm-0"></div>
+        {% for personnageCol in personnages %}
+            <div class="col-lg-2 col-md-3 col-xs-12 col-sm-12">
+                <ul class="list-group">
+                    {% for personnage in personnageCol %}
+                        <li class="list-group-item" title="Citation {{ personnage['name'] }}"><a href="{{path('citations_personnage_front_theme', {'slug': personnage['name']})}}">{{ personnage['name'] }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+{% endblock %}

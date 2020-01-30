@@ -1,0 +1,318 @@
+{% block body %}
+    <div class="col-lg-8 offset-lg-2 col-md-12 col-sm-12">
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <div class="form-group" id="imageUploadId">
+                <h4 style="text-align: center" class="mt-5" id="titleUploadImage">Ajoutez votre image en cliquant sur le boutton ci-dessous</h4>
+                <label class="label" data-toggle="tooltip" data-original-title="Choisir Une Image" style="margin: 0 auto;display: block;width: 120px;">
+                    <img class="rounded" id="creer" src="{{ asset('build/add.png') }}" alt="créer" width="120">
+                    <input type="file" class="sr-only form-control" id="input" name="image" accept="image/*">
+                </label>
+                <div class="progress mt-2 mb-2" style="display: none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">100%</div>
+                </div>
+                <div class="alert text-center" role="alert"></div>
+                <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Crop the image</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="img-container">
+                                    <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="crop">Crop</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="/createAjax" method="post" id="formCreate">
+                <div class="form-group">
+                    <label for="citation">Auteur</label>
+                    <input type="text" class="form-control auteur" name="auteur" value="{{ app.user.username }}">
+                </div>
+                <div class="form-group">
+                    <label for="citation">Citation</label>
+                    <textarea name="citation" rows="3" class="form-control citation" placeholder="Votre citation"></textarea>
+                </div>
+
+                <input type="hidden" class="urlImage" value="" name="urlImage" id="urlImage">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="form-group bootstrap-tagsinput">
+                        <label for="citation">Tags</label>
+                        <input type="text" name="tags" id="tags" class="form-control" data-role="tagsinput" value="">
+                    </div>
+
+                    <div class="form-check" style="display: none;">
+                        <input type="checkbox" name="citationCelebre" class="form-check-input" id="activateAdmin" checked>
+                        <label class="form-check-label" for="activateAdmin">Citation célèbre</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Type</label>
+                        <select class="form-control" id="type" name="type">
+                            <option value="1">Célèbre</option>
+                            <option value="2">Fiction</option>
+                        </select>
+                    </div>
+                {% endif %}
+            </form>
+            <div class="form-group">
+                <button  class="btn btn-primary col-12 buttonSubmit" id="buttonSubmit" disabled>
+                    Créer la citation
+                </button>
+            </div>
+            {% if error is defined %}
+                <div class="alert-warning text-center" role="alert">{{ error|raw }}</div>
+            {% endif %}
+            {% if valid is defined %}
+                <div class="alert-success text-center" role="alert">Votre Image à été uploadé avec succès ! vous pouvez retrouver toutes les images d'internautes
+                    <a href="/citations-internautes">ici</a></div>
+            {% endif %}
+            <div class="alertAjax text-center" role="alert"></div>
+            <div id="imgResult" style="margin: 0px auto; display: block; width: 300px;" class="mt-4 mb-4">
+
+            </div>
+        {% else %}
+            <p class="mt-5 mb-5 text-center lead">
+                <a href="/login" class="btn btn-primary btn-lg btn-small-mobile" role="button" aria-pressed="true">Connectez vous</a>
+                ou
+                <a href="/register" class="btn btn-info btn-lg btn-small-mobile" role="button" aria-pressed="true">inscrivez vous</a>
+                <br> pour pouvoir ajouter des citations.</p>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts_bottom %}
+    <script>
+
+        window.addEventListener('DOMContentLoaded', function () {
+            var avatar = document.getElementById('creer');
+            var image = document.getElementById('image');
+            var input = document.getElementById('input');
+            var $alert = $('.alert');
+            var $alertAjax = $('.alertAjax');
+            var $modal = $('#modal');
+            var cropper;
+            var $progress = $('.progress');
+            var $progressBar = $('.progress-bar');
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            document.getElementById('buttonSubmit').addEventListener('click', function () {
+                {% if is_granted('ROLE_ADMIN') %}
+                $.ajax('/createCitationAdminAjax', {
+                    method: 'POST',
+                    data: { auteur: $(".auteur").val(), citation: $(".citation").val(), urlImage: $(".urlImage").val(), tags: $("#tags").val(), type: $("#type").val()},
+                    xhr: function () {
+                        var xhr = new XMLHttpRequest();
+                        xhr.upload.onprogress = function (e) {
+
+                        };
+                        return xhr;
+                    },
+
+                    success: function (e) {
+                        if (e == "valid")
+                        {
+                            $alertAjax.show().removeClass('alert-warning').addClass('alert-success').html('Votre Image à été uploadé avec succès ! <a href="/"> Accueil</a>');
+                            $("#imgResult").html("<img src='/image/"+$(".urlImage").val()+"' alt='Votre citation' title='Votre citation' width='300'/>");
+                            $("#formCreate").hide();
+                            $("#buttonSubmit").hide();
+                            $("#imageUploadId").hide();
+                        }
+                        else
+                        {
+                            $alertAjax.show().addClass('alert-warning').html(e);
+                        }
+                    },
+
+                    error: function (e) {
+                        $alertAjax.show().addClass('alert-success').html("error" + e);
+                    },
+
+                    complete: function () {
+
+                    },
+                });
+                {% else %}
+                $.ajax('/createAjax', {
+                    method: 'POST',
+                    data: { auteur: $(".auteur").val(), citation: $(".citation").val(), urlImage: $(".urlImage").val()},
+                    xhr: function () {
+                        var xhr = new XMLHttpRequest();
+                        xhr.upload.onprogress = function (e) {
+
+                        };
+                        return xhr;
+                    },
+
+                    success: function (e) {
+                        if (e == "valid")
+                        {
+                            $alertAjax.show().removeClass('alert-warning').addClass('alert-success').html('Votre Image à été uploadé avec succès ! vous pouvez retrouver toutes les images d\'internautes ' +
+                                '<a href="/citations-internautes">ici</a>');
+                            $("#imgResult").html("<img src='/image/"+$(".urlImage").val()+"?internaute' alt='Votre citation' title='Votre citation' width='300'/>");
+                            $("#formCreate").hide();
+                            $("#imageUploadId").hide();
+                            $("#buttonSubmit").hide();
+                        }
+                        else
+                        {
+                            $alertAjax.show().addClass('alert-warning').html(e);
+                        }
+                    },
+
+                    error: function (e) {
+                        $alertAjax.show().addClass('alert-success').html("error" + e);
+                    },
+
+                    complete: function () {
+
+                    },
+                });
+                {% endif %}
+            });
+
+
+
+
+            input.addEventListener('change', function (e) {
+                var files = e.target.files;
+                var done = function (url) {
+                    input.value = '';
+                    image.src = url;
+                    $alert.hide();
+                    $modal.modal('show');
+                };
+                var reader;
+                var file;
+                var url;
+
+                if (files && files.length > 0) {
+                    file = files[0];
+
+                    if (URL) {
+                        done(URL.createObjectURL(file));
+                    } else if (FileReader) {
+                        reader = new FileReader();
+                        reader.onload = function (e) {
+                            done(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            $modal.on('shown.bs.modal', function () {
+                cropper = new Cropper(image, {
+                    aspectRatio: 600 / 800,
+                    viewMode: 2,
+                    movable: false,
+                    zoomable: false,
+                    rotatable: false,
+                    scalable: false,
+                    cropBoxResizable:false,
+                    minContainerHeight:800,
+                    minCanvasHeight:800,
+                    minCropBoxWidth:600,
+                    minCropBoxHeight:800
+
+                });
+            }).on('hidden.bs.modal', function () {
+                cropper.destroy();
+                cropper = null;
+            });
+
+            document.getElementById('crop').addEventListener('click', function () {
+                var initialAvatarURL;
+                var canvas;
+
+                $modal.modal('hide');
+
+                if (cropper) {
+                    canvas = cropper.getCroppedCanvas({
+                        width: 600,
+                        height: 800,
+                    });
+                    $(avatar).css('width','300').css('height','400');
+                    $(avatar).parent().css('width','300');
+                    initialAvatarURL = avatar.src;
+                    avatar.src = canvas.toDataURL();
+                    $progress.show();
+                    $alert.removeClass('alert-success alert-warning');
+                    canvas.toBlob(function (blob) {
+                        var formData = new FormData();
+
+                        formData.append('citationImage', blob, 'avatar.png');
+                        $.ajax('/uploadImageUser', {
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+
+                            xhr: function () {
+                                var xhr = new XMLHttpRequest();
+
+                                xhr.upload.onprogress = function (e) {
+                                    var percent = '0';
+                                    var percentage = '0%';
+
+                                    if (e.lengthComputable) {
+                                        percent = Math.round((e.loaded / e.total) * 100);
+                                        percentage = percent + '%';
+                                        $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                                    }
+                                };
+
+                                return xhr;
+                            },
+
+                            success: function (e) {
+                                if (e.length > 20)
+                                {
+                                    avatar.src = initialAvatarURL;
+                                    $alert.show().addClass('alert-warning').text(e);
+                                    $("#urlImage").val("");
+                                    $("#titleUploadImage").text("Ajoutez votre image en cliquant sur le boutton ci-dessous");
+                                    $(avatar).css('width','120').css('height','120');
+                                    $(avatar).parent().css('width','120');
+                                    $('.buttonSubmit').prop("disabled", true);
+                                }
+                                else
+                                {
+                                    $('.buttonSubmit').removeAttr("disabled");
+                                    $alert.show().addClass('alert-success').text('Image ajouté avec succès, ajoutez votre citation ensuite et cliquez sur le boutton créer.');
+                                    $("#urlImage").val(e);
+                                    $("#titleUploadImage").text("Votre image : Cliquez dessus si vous souhaitez en changer")
+                                }
+                            },
+
+                            error: function (e) {
+                                $('.buttonSubmit').prop("disabled", true);
+                                avatar.src = initialAvatarURL;
+                                $alert.show().addClass('alert-warning').text('Erreur pendans l\'upload de votre image');
+                                $(avatar).css('width','120').css('height','120');
+                                $(avatar).parent().css('width','120');
+                            },
+
+                            complete: function () {
+                                $progress.hide();
+                            },
+                        });
+                    });
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
+

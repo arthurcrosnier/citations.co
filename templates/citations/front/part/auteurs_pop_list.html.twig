@@ -1,0 +1,23 @@
+{% block body %}
+        <div class="col-12">
+            <div class="cardTag">
+                <div class="card-body">
+                    {% for auteur in auteurs %}
+                        {% set policeSize = auteur['total'] / 0.04  %}
+                        {% if policeSize > 22  %}
+                            {% set policeSize = 22 %}
+                        {% endif %}
+                        {% if policeSize < 10  %}
+                            {% set policeSize = 10 %}
+                        {% endif %}
+                        {% if auteur['name']|length < 16 %}
+                        <div class="chip chip-md red lighten-1 white-text example z-depth-2 mr-0" style="font-size: {{ policeSize }}px;">
+                            <a href="{{path('citations_auteur_front_theme', {'slug': auteur['name']})}}">{{ auteur['name'] }}</a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

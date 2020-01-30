@@ -1,0 +1,123 @@
+{% extends "base.html.twig" %}
+    {% if internaute is defined %}
+        {%   set auteur=citation.auteur %}
+    {% else %}
+        {%   set auteur=citation.auteur.name %}
+    {% endif %}
+
+{% block meta_title %}
+
+    <title>Citation : {{ auteur }} - Citation-inspiration.com</title>
+    <meta property="og:title" content="Citation : {{ auteur}} - Citation-inspiration.com">
+    <meta name="description" content="{{ citation.description }} - Une citation de {{ auteur }}.">
+    <meta property="og:description" content="{{ citation.description }} - Une citation de {{ auteur }}.">
+    <meta property="og:image" content="https://citation-inspiration.com{{path('display_image', {'url': citation.url ~ '.png'})}}">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class=" col-lg-8 offset-lg-2 col-md-12 col-sm-12">
+            <h1 class="text-center">Citation de <a class='text-info' href="{{path('citations_auteur_front_theme', {'slug': citation.auteur.name})}}">{{ auteur }}</a></h1>
+
+            <div class="col-lg-4 col-md-8 col-sm-12" style="margin: 0 auto;">
+                <img style="color: #fff!important;" class="card-img-top rounded-0" src="{{path('display_image', {'url': citation.url ~ '.png'})}}" alt="{{  auteur }} - {{  citation.description }}">
+            </div>
+            <blockquote class="quote-card black-card my-3">
+                <p class="text-center px-4">
+                    {{ citation.description }}
+                </p>
+
+                <cite>
+                    <a style="color:#fff;" href="{{path('citations_auteur_front_theme', {'slug': citation.auteur.name})}}">{{ auteur }}</a>
+                </cite>
+                <p class="englobeBottom text-center mt-5">
+                    <span class="mt-5 shareButton cardBottomButton share-{{  citation.id }}" data-id="{{  citation.id }}" style="display: inline;">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.getSchemeAndHttpHost() ~ path('citation_unique', {'id': citation.id})}}" rel="nofollow" title="Partagez cette citation sur Facebook" target="_blank">
+                            <i class="fas fa-share-alt" data-toggle="tooltip" data-placement="top" title="Share this post">
+                            </i>
+                        </a>
+                    </span>
+                    <span class="mt-5 likeButton cardBottomButton like-{{  citation.id }}" data-id="{{  citation.id }}" style="display: inline;">
+                        <i class="fas fa-heart ml-3" data-toggle="tooltip" data-placement="top" title="I like it">
+                        </i>
+                        <span id="timesLiked"  style="font-size: 14px;color: #888!important;">{{ citation.countLikes }}</span>
+                    </span>
+                </p>
+            </blockquote>
+
+            <p class="tags text-center">
+                {% if internaute is not defined %}
+                    {% if citation.auteur.type == 1 %}
+                        <a href="{{path('citation_front_theme', {'slug': 'celebre'})}}" class="badge badge-primary my-2 py-1" style="font-size: 18px;">Citations de célébrités</a>
+                    {% else  %}
+                        <a href="{{path('citation_front_theme', {'slug': 'fiction'})}}" class="badge badge-primary my-2 py-1" style="font-size: 18px;">Citations de personnages de fictions</a>
+                    {% endif %}
+                    {% for tag in citation.tag %}
+                        <a href="{{path('citations_thematique_front_theme', {'slug': tag.name})}}" class="badge badge-primary my-2 py-1" style="font-size: 18px;">{{ tag.name }}</a>
+                    {% endfor %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <form action="{{path('set_citation_du_jour')}}" method="post">
+            <div class="form-group row">
+                {%   set dateBoo = citation.date_citation_du_jour|date("Y/m/d")|replace({'/': '-'}) %}
+                <label for="example-date-input" class="col-2 col-form-label">Citation du jour : ({% if citation.citation_du_jour %} yes {% else %} no {% endif%})</label>
+                    <input class="form-control" type="date" name="datecitationdujour" value="{{ dateBoo }}" id="example-date-input"/>
+                    <input type="hidden" name="idCitation" value="{{ citation.id }}">
+            </div>
+            <div class="form-group row">
+                <button class="btn btn-primary" type="submit">Set Citation Du Jour</button>
+            </div>
+
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).on('click', '.likeButton', function (event) {
+                var $id = $(this).attr("data-id");
+                var count = $(".like-" + $id).find("#timesLiked").text();
+                {% if internaute is defined %}
+                var url ="/likeCitationInternauteAjax";
+                {% else %}
+                var url ="/likeCitationAjax";
+                {% endif%}
+                //on prevalid le like
+                $(".like-" + $id).css("color", "#ed4956");
+                count++;
+                $(".like-" + $id).find("#timesLiked").text((parseInt(count)));
+                $(".like-" + $id).removeClass("likeButton");
+                $.ajax(url, {
+                    method: 'POST',
+                    data: { idCitation: $id},
+                    success: function (e) {
+                        if (e == "like")
+                        {
+                            // like ok
+                        }
+                        else
+                        {
+                            // on annule le précédent like rapide up
+                            count--;
+                            $(".like-" + $id).find("#timesLiked").text((parseInt(count)));
+                        }
+
+                    },
+                    error: function (e) {
+                        count--;
+                        $(".like-" + $id).css("color", "#888888");
+                    },
+                    complete: function () {
+
+                    },
+                });
+                event.stopImmediatePropagation();
+            });
+        });
+    </script>
+{% endblock %}

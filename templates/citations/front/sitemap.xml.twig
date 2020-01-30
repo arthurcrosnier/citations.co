@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://citation-inspiration.com</loc>
+        <changefreq> weekly </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/citation-du-jour</loc>
+        <changefreq> daily </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/celebre</loc>
+        <changefreq> hourly </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/fiction</loc>
+        <changefreq> hourly </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/inspiration</loc>
+        <changefreq> hourly </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/auteurs</loc>
+        <changefreq> daily </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/personnages</loc>
+        <changefreq> daily </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/thematiques</loc>
+        <changefreq> weekly </changefreq>
+    </url>
+    <url>
+        <loc>https://citation-inspiration.com/blog</loc>
+        <changefreq> daily </changefreq>
+    </url>
+    {% for url in urls %}
+        <url>
+            <loc>{{ url.loc }}</loc>
+
+            {% if url.lastmod is defined %}
+                <lastmod>{{ url.lastmod }}</lastmod>
+            {% endif %}
+
+            {% if url.changefreq is defined %}
+                <changefreq>{{ url.changefreq }}</changefreq>
+            {% endif %}
+
+            {% if url.priority is defined %}
+                <priority>{{ url.priority }}</priority>
+            {% endif %}
+        </url>
+    {% endfor %}
+</urlset>

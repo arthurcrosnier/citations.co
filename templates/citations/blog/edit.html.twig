@@ -1,0 +1,19 @@
+{# templates/blog/edit.html.twig #}
+
+{% extends "base.html.twig" %}
+
+{% block meta_index %}{% endblock %}
+{% block meta_title %}
+    <title>Editer un article ADMIN</title>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h4>Modifier l'article {{ article.title }}</h4>
+            {% if article.picture is not null %}
+                <img width="300" src="{{ asset('uploads/' ~ article.picture) }}">
+            {% endif %}
+        </div>
+        {% include "citations/blog/part/article_form.html.twig" %}
+    </div>
+{% endblock %}

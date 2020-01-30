@@ -1,0 +1,102 @@
+<!-- Card -->
+<div class="card promoting-card">
+    <!-- Card content -->
+    <div class="card-body d-flex flex-row">
+        <!-- Content -->
+            <!-- Title -->
+        <div style="width: 100%;">
+            <h4 class="card-title mb-2" style="width: 100%;font-size: 1.3em;color: #fff;">
+                {% if internaute is defined %}
+                    {{  citation.auteur }}
+                {% else  %}
+                    <a class="text-light" href="{{path('citations_auteur_front_theme', {'slug': citation.auteur.name})}}" title="Citations de {{ citation.auteur.name }}">{{ citation.auteur.name }}</a>
+                {% endif %}
+
+            </h4>
+            {% if citation.date_citation_du_jour is defined and citation.date_citation_du_jour is not null %}
+                <p class="card-text text-center">
+                    {{ citation.date_citation_du_jour|localizeddate('none', 'none', "fr", null, 'EEEE D MMMM Y') }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Card image -->
+    <div class="view overlay">
+        {% if internaute is defined %}
+            <img style="color: #fff!important;" class="card-img-top rounded-0" src="{{path('display_image', {'url': citation.url ~ '.png'})}}?internaute" alt="{{  citation.auteur }} - {{  citation.description }}">
+        {% else  %}
+            <img style="color: #fff!important;" class="card-img-top rounded-0" src="{{path('display_image', {'url': citation.url ~ '.png'})}}" alt="{{  citation.auteur.name }} - {{  citation.description }}">
+            <a href="{{path('citation_unique', {'id': citation.id})}}">
+                <div class="mask rgba-white-slight"></div>
+            </a>
+        {% endif %}
+    </div>
+    <!-- Card content -->
+    <div class="card-body">
+        <div class="collapse-content">
+            <!-- Text -->
+            <p class="card-text" style="color: #fff;text-align: center;">
+                {{  citation.description }}
+            </p>
+            <!-- Button -->
+            <div class="shareButton cardBottomButton share-{{  citation.id }}" data-id="{{  citation.id }}">
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.getSchemeAndHttpHost() ~ path('citation_unique', {'id': citation.id})}}" rel="nofollow" title="Partagez cette citation sur Facebook" target="_blank">
+                    <i class="fas fa-share-alt float-right my-1" data-toggle="tooltip" data-placement="top" title="Share this post">
+                    </i>
+                </a>
+            </div>
+            <div class="likeButton cardBottomButton like-{{  citation.id }}" data-id="{{  citation.id }}">
+                <span id="timesLiked" class="float-right mr-3 my-1" style="font-size: 14px;color: #888!important;">{{ citation.countLikes }}</span>
+                <i class="fas fa-heart float-right my-1 mr-1" data-toggle="tooltip" data-placement="top" title="I like it">
+                </i>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Card -->
+
+{% block javascripts_bottom %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $(document).on('click', '.likeButton', function (event) {
+            var $id = $(this).attr("data-id");
+            var count = $(".like-" + $id).find("#timesLiked").text();
+            {% if internaute is defined %}
+            var url ="/likeCitationInternauteAjax";
+            {% else %}
+            var url ="/likeCitationAjax";
+            {% endif%}
+            //on prevalid le like
+            $(".like-" + $id).css("color", "#ed4956");
+            count++;
+            $(".like-" + $id).find("#timesLiked").text((parseInt(count)));
+            $(".like-" + $id).removeClass("likeButton");
+            $.ajax(url, {
+                method: 'POST',
+                data: { idCitation: $id},
+                success: function (e) {
+                    if (e == "like")
+                    {
+                        // like ok
+                    }
+                    else
+                    {
+                        // on annule le précédent like rapide up
+                        count--;
+                        $(".like-" + $id).find("#timesLiked").text((parseInt(count)));
+                    }
+
+                },
+                error: function (e) {
+                    count--;
+                    $(".like-" + $id).css("color", "#888888");
+                },
+                complete: function () {
+
+                },
+            });
+            event.stopImmediatePropagation();
+        });
+    });
+</script>
+{% endblock %}

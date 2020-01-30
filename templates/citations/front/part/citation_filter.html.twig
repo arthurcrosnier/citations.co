@@ -1,0 +1,21 @@
+<form method="GET" action="" id="filterForm">
+    <div class="form-row align-items-center">
+        <div class="col-md-2 offset-md-10 my-4">
+            <select name="tri" class="custom-select mr-sm-2" id="inlineFormCustomSelect" onchange="document.getElementById('filterForm').submit();">
+                <option value="" selected>{{ tri }}</option>
+                {% if tri !=  "Plus récentes"%}
+                <option value="recent_desc">Plus récentes</option>
+                {% endif %}
+                {% if tri !=  "Ordre alphabétique"%}
+                <option value="alphabet_asc">Ordre alphabétique</option>
+                {% endif %}
+                {% if tri !=  "Par auteur" and internaute is not defined %}
+                <option value="auteur_asc">Par auteur</option>
+                {% endif %}
+                {% if tri !=  "Popularité" and internaute is not defined %}
+                    <option value="popularite_desc">Par popularité</option>
+                {% endif %}
+            </select>
+        </div>
+    </div>
+</form>

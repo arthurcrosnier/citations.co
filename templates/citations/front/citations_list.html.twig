@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block meta_title %}
+    <title>{{ title }}</title>
+    <meta property="og:title" content="{{ title }}">
+    <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="{{ asset('build/logo.png') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center"> {{ titre|raw }}</h1>
+    <h2 class="text-center" style="border-bottom: 1px solid #888888;">{{ total}} citations</h2>
+    {% include 'citations/front/part/citation_filter.html.twig' %}
+    <div class="row">
+
+        {% for citation in citations %}
+            {% set citation = citation %}
+        <div class="col-md-3">
+            {{ include('citations/front/part/citation_card.html.twig', {citation: citation}) }}
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'citations/front/part/pagination.html.twig' %}
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+{% endblock %}

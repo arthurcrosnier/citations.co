@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block meta_title %}
+    <title>{{ title }}</title>
+    <meta property="og:title" content="{{ title }}">
+    <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="https://citation-inspiration.com{{ asset('build/logo.png') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center"> Thématiques populaires </h1>
+    <h2 class="text-center" style="border-bottom: 1px solid #888888;">{{ thematiques|length }} thématiques populaires</h2>
+    <div class="row">
+        <div class="col-12">
+            <div class="cardTag">
+                <div class="card-body">
+                    {% for thematique in thematiques %}
+                        {% set policeSize = thematique['total'] / 2.5  %}
+                        {% if policeSize > 35  %}
+                            {% set policeSize = 35 %}
+                        {% endif %}
+                        {% if policeSize < 15  %}
+                            {% set policeSize = 15 %}
+                        {% endif %}
+                        <div class="chip chip-md red lighten-1 white-text example z-depth-2 mr-0" style="font-size: {{ policeSize }}px;">
+                            <a href="{{path('citations_thematique_front_theme', {'slug': thematique['name']|replace({' ': '-'})})}}">{{ thematique['name'] }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+{% endblock %}

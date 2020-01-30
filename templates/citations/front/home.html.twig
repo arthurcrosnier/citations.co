@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="col-lg-8 col-md-12 col-sm-12 offset-lg-2 mb-4 p-lg-5 p-md-2 p-sm-0 pt-sm-2" style="background-color: #343a40; color:rgba(255, 255, 255, 0.8);">
+        <h1 class="text-md-center text-sm-center">Citations</h1>
+        <p>Citations.co fait peau neuve et deviens Citation-inspiration. Nous avons récolté plus de 10 000 citations et proverbes rattachées à plus de 2000 auteurs. Dans un design qui nous semble le plus adapté aux citations et proverbes.</p>
+        <h2 class="text-md-center text-sm-center"><u>Citation du jour</u></h2>
+        <div class="col-lg-4 col-md-8 col-sm-12 offset-lg-4 offset-md-2">
+            {{ include('citations/front/part/citation_card.html.twig', {citation: citationDuJour}) }}
+        </div>
+        <h2 class="text-md-center text-sm-center"><u>Citations Fictions</u></h2>
+        <a class="" href="/fiction">
+            <img src="{{ asset('build/joker.jpg') }}" alt="Citations de personnages de fictions" class="col-12">
+        </a>
+        <h2 class="text-md-center text-sm-center"><u>Citations Célèbres</u></h2>
+        <a class="" href="/celebre">
+            <img src="{{ asset('build/lumiere.jpg') }}" alt="Citations célèbres" class="col-12">
+        </a>
+        <h2 class="text-md-center text-sm-center"><u>Meilleur citation</u></h2>
+        <div class="col-lg-4 col-md-8 col-sm-12 offset-lg-4 offset-md-2">
+            {{ include('citations/front/part/citation_card.html.twig', {citation: meilleurCitation}) }}
+        </div>
+        <h2 class="text-md-center text-sm-center"><u>Créer votre citation !</u></h2>
+        {{ include('citations/front/part/create_include.html.twig') }}
+        <h2 class="text-md-center text-sm-center"><u>Thématiques populaires</u></h2>
+        {{ include('citations/front/part/thematique_pop_list.html.twig', {thematiques: thematique_pop}) }}
+        <h2 class="text-md-center text-sm-center"><u>Auteurs populaires</u></h2>
+        {{ include('citations/front/part/auteurs_pop_list.html.twig', {auteurs: auteurs}) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts_bottom %}
+    {{ parent() }}
+{% endblock %}

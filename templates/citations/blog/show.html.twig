@@ -1,0 +1,154 @@
+{# templates/blog/add.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block meta_title %}
+    <title>{{ article.title }} - Citation-inspiration.com</title>
+    <meta property="og:title" content="{{ article.title }} - Citation-inspiration.com">
+    <meta name="description" content="Article - {{ article.title }}">
+    <meta property="og:description" content="Article - {{ article.title }}">
+    <meta property="og:image" content="https://citation-inspiration.com{{ asset('uploads/' ~ article.picture) }}">
+    <style>
+        article img {
+            max-width: 100%;
+        }
+        .s-content--no-padding-bottom {
+            padding-bottom: 0;
+        }
+        .s-content {
+            background-color: #ffffff;
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+        .s-content--narrow .row {
+            max-width: 1200px;
+        }
+        .row {
+            width: 94%;
+            max-width: 1200px;
+            margin: 0 auto !important;
+        }
+        .s-content__header {
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+        .s-content__media, .s-content__post-thumb {
+            position: relative;
+        }
+        .s-content__media {
+            padding: 0;
+            margin-top: 1rem;
+        }
+        .s-content__main {
+            margin-top: 2rem;
+            padding-left: 6rem;
+            padding-right: 6rem;
+        }
+        .s-content__header-meta {
+            list-style: none;
+            margin-left: 0;
+            margin-bottom: 1.2rem;
+            font-family: "metropolis-medium", sans-serif;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            position: relative;
+            padding: 0;
+        }
+        .s-content__header-meta li {
+            display: inline-block;
+            padding-left: 0;
+            margin: 0 1rem;
+        }
+        .s-content__header-meta span, .s-content__header-meta a {
+            color: #000000;
+        }
+        .s-content__header-meta .cat a::after {
+            content: ",";
+        }
+
+        .s-content__media, .s-content__post-thumb {
+            position: relative;
+            margin: 0 auto;
+        }
+        .s-content__media img {
+            vertical-align: bottom;
+        }
+        img, video {
+            max-width: 100%;
+            height: auto;.quote-card:after
+        }
+        img {
+            border-style: none;
+        }
+        .s-content__header h1 {
+            font-size: 4.8rem;
+            line-height: 1.25;
+            margin-top: 0;
+            letter-spacing: -.15rem;
+        }
+        @media only screen and (max-width: 800px)
+        {
+            .s-content {
+                padding-top: 3rem;
+            }
+        }
+        @media only screen and (max-width: 1000px)
+        {
+            .s-content--narrow .row {
+                max-width: 800px;
+            }
+        }
+
+        @media only screen and (max-width: 600px)
+        {
+            .row {
+                width: auto;
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+
+            .s-content__header h1 {
+                font-size: 3.6rem;
+            }
+
+            .s-content--narrow .s-content__header, .s-content__main, .s-content__media {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        @media only screen and (max-width: 400px)
+        {
+            .s-content--narrow .s-content__header {
+                margin-top: 0;
+            }
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+        <section class="s-content s-content--narrow s-content--no-padding-bottom">
+        <article class="row format-standard">
+            <div class="s-content__header col-full">
+                <h1 class="s-content__header-title col-full">
+                    {{ article.title }}
+                </h1>
+                <ul class="s-content__header-meta">
+                    <li class="date">{{ article.publicationDate|date('d/m/Y') }}</li>
+                    <li class="cat">
+                        {% for category in article.categories %}
+                            <a href="#0">{{ category.label|trim }}</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+            <div class="s-content__media col-full">
+                <div class="s-content__post-thumb">
+                    <img src="{{ asset('uploads/' ~ article.picture) }}" alt="illustration header {{ article.title }}">
+                </div>
+            </div>
+            <div class="col-full s-content__main">
+                {{ article.content|raw }}
+            </div>
+        </article>
+        </section>
+{% endblock %}

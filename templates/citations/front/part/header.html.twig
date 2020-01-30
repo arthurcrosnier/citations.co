@@ -1,0 +1,59 @@
+<div id="logo">
+    <a class="logo" href="/">
+        <img src="{{ asset('build/logo.png') }}" class="logoSite" alt="Logo Citation-inspiration.com">
+    </a>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample07">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/celebre" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Citations</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="/celebre">Citations célébres</a>
+                        <a class="dropdown-item" href="/fiction">Citations fictions</a>
+                        <a class="dropdown-item" href="/inspiration">Citations inspirations</a>
+                        <a class="dropdown-item" href="/citation-du-jour">Citation du jour</a>
+                        <a class="dropdown-item" href="/citations-internautes">Citations d'internautes</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/auteurs" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Auteurs</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown02">
+                        <a class="dropdown-item" href="/auteurs">Auteurs célébres</a>
+                        <a class="dropdown-item" href="/personnages">Personnages célébres</a>
+                        <a class="dropdown-item disabled" href="#">Auteurs internautes</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/thematiques">Thématiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/blog">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/create">Créer une citation</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-md-0" action="/recherche">
+                <input class="form-control" type="text" name="search" placeholder="Recherche" aria-label="Recherche">
+            </form>
+            <ul class="navbar-nav">
+                {% if app.user %}
+                    <li class="nav-link"><a class="nav-link" href="/logout" ><i class="fas fa-sign-out-alt" title="Se déconnecter"></i></a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-link"><a class="nav-link" href="/adminvog3"><i class="fas fa-crown"></i> Admin</a></li>
+                    {% endif %}
+                {% else %}
+                    <li class="nav-link"><a class="nav-link" href="/login"><i class="fas fa-user-plus" title="Se connecter"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

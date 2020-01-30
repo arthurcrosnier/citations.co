@@ -1,0 +1,23 @@
+{% block body %}
+        <div class="col-12">
+            <div class="cardTag">
+                <div class="card-body">
+                    {% for thematique in thematiques %}
+                        {% set policeSize = thematique['total'] / 2.5  %}
+                        {% if policeSize > 22  %}
+                            {% set policeSize = 22 %}
+                        {% endif %}
+                        {% if policeSize < 10  %}
+                            {% set policeSize = 10 %}
+                        {% endif %}
+                        {% if thematique['name']|length < 16 and thematique['name']|length > 0 %}
+                            <div class="chip chip-md red lighten-1 white-text example z-depth-2 mr-0" style="font-size: {{ policeSize }}px;">
+                                <a href="{{path('citations_thematique_front_theme', {'slug': thematique['name']|replace({' ': '-'})})}}">{{ thematique['name'] }}</a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% set currentPath = path(app.request.attributes.get('_route'),
+    app.request.attributes.get('_route_params')) %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    {% block meta_title %}
+        <title>Citations d'auteurs célèbres et de personnages de fictions</title>
+        <meta property="og:title" content="Citations d'auteurs célèbres et de personnages de fictions">
+        <meta name="description" content="Découvrez les citations célèbres d'auteurs et les phrases cultes de personnages de fictions. Chaque jours de nouvelles citations et phrases cultes ainsi que la citation du jour en rapport avec l'actualité.">
+        <meta property="og:description" content="Découvrez les citations célèbres d'auteurs et les phrases cultes de personnages de fictions. Chaque jours de nouvelles citations et phrases cultes ainsi que la citation du jour en rapport avec l'actualité.">
+        <meta property="og:image" content="https://citation-inspiration.com{{ asset('build/logo.png') }}">
+        <meta property="fb:app_id" content="1294220020775669">
+    {% endblock %}
+    {% block meta_index %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36595362-1"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-36595362-1');
+        </script>
+        <meta name="robots" content="index">
+    {% endblock %}
+    <meta property="og:site_name" content="Citation-inspiration.com">
+    <meta property="og:url" content="{{ app.request.uri }}">
+
+    <meta property="og:type" content="website">
+    <meta property="fb:admins" content="arthur.crosnier">
+    <meta property="og:locale" content="fr_FR">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="fr">
+    <link rel="shortcut icon" href="{{ asset('build/avatar.jpg') }}" type="image/ico">
+    <link rel="icon" type="image/ico" href="{{ asset('build/avatar.jpg') }}" />
+    <link rel="canonical" href="https://citation-inspiration.com{{ currentPath }}">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    {% block javascripts_top %}{% endblock %}
+    <script data-ad-client="ca-pub-7875930921847711" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+<body>
+{% include 'citations/front/part/header.html.twig' %}
+<div class="container-fluid fluid-padding-change" style="margin-top: 100px;">
+    {% block body %}{% endblock %}
+</div>
+{% block footer %}
+    {% include 'citations/front/part/footer.html.twig' %}
+{% endblock %}
+{% block javascripts_bottom %}
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('bootstrap-tag') }}
+{% endblock %}
+</body>
+</html>

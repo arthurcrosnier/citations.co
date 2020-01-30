@@ -1,0 +1,82 @@
+{# templates/admin/index.html.twig #}
+
+{% extends "base.html.twig" %}
+
+{% block meta_index %}{% endblock %}
+{% block meta_title %}
+<title>ADMIN</title>
+{% endblock %}
+
+{% block body %}
+    <div class="admin-page">
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <a href="{{ path('blogAdd') }}" class="btn btn-primary mb-3" style="float: right"><i class="fas fa-plus"></i> Article</a>
+                    <h5 class="text-center">Articles</h5>
+                    <table class="table table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Titre</th>
+                            <th>Publier</th>
+                            <th>Date de publication</th>
+                            <th>Date de modification</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% set i = 1 %}
+                        {% for article in articles %}
+                            <tr>
+                                <td>{{ i }}</td>
+                                <td><a class="text-info" href="{{ path('blogShow', {'article': article.id}) }}" target="_blank">{{ article.title }}</a></td>
+                                <td>
+                                    <span class="badge {{ article.isPublished ? 'text-success' : 'text-warning' }}">
+                                        {{ article.isPublished ? 'oui' : 'non' }}
+                                    </span>
+                                </td>
+                                <td>{{ article.isPublished ? article.publicationDate|date('d/m/Y') : '-' }}</td>
+                                <td>{{ article.lastUpdateDate|date('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ path('blogEdit', {'article': article.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                    <a href="{{ path('blogRemove', {'article': article.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                            {% set i = i+1 %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <h5 class="text-center">Utilisateurs</h5>
+                    <table class="table table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Adresse email</th>
+                            <th>Username</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% set i = 1 %}
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ i }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>
+                                    <span class="badge blue">
+                                        {% for role in user.roles %}
+                                        {{ role }} ,
+                                        {% endfor %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-danger"><i class="fas fa-user-slash"></i></a>
+                                </td>
+                            </tr>
+                            {% set i = i+1 %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock %}
